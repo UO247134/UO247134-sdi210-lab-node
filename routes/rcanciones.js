@@ -1,4 +1,4 @@
-module.exports = function(app,swig,mongo) {
+module.exports = function(app,swig,gestorBD) {
     app.post("/cancion", function(req, res) {
         var cancion = {
             nombre : req.body.nombre,
@@ -6,19 +6,11 @@ module.exports = function(app,swig,mongo) {
             precio : req.body.precio
         }
         // Conectarse
-        mongo.MongoClient.connect(app.get('db'), function(err, db) {
-            if (err) {
-                res.send("Error de conexión: " + err);
+        gestorBD.insertarCancion(cancion, function(id){
+            if (id == null) {
+                res.send("Error al insertar canción");
             } else {
-                var collection = db.collection('canciones');
-                collection.insert(cancion, function(err, result) {
-                    if (err) {
-                        res.send("Error al insertar " + err);
-                    } else {
-                        res.send("Agregada id: "+ result.ops[0]._id);
-                    }
-                    db.close();
-                });
+                res.send("Agregada la canción ID: " + id);
             }
         });
     });
