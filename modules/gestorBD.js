@@ -5,6 +5,23 @@ module.exports = {
         this.mongo = mongo;
         this.app = app;
     },
+    eliminarCancion : function(criterio, funcionCallback) {
+        this.mongo.MongoClient.connect(this.app.get('db'), function(err, db) {
+            if (err) {
+                funcionCallback(null);
+            } else {
+                var collection = db.collection('canciones');
+                collection.remove(criterio, function(err, result) {
+                    if (err) {
+                        funcionCallback(null);
+                    } else {
+                        funcionCallback(result);
+                    }
+                    db.close();
+                });
+            }
+        });
+    },
     obtenerUsuarios: function (criterio, funcionCallback) {
         this.mongo.MongoClient.connect(this.app.get('db'), function (err, db) {
 
@@ -13,24 +30,6 @@ module.exports = {
             } else {
                 var collection = db.collection('usuarios');
                 collection.find(criterio).toArray(function (err, usuarios) {
-                    if (err) {
-                        funcionCallback(null);
-                    } else {
-                        funcionCallback(usuarios);
-                    }
-                    db.close();
-                });
-            }
-        });
-    },
-    obtenerUsuarioPorEmail: function (criterio, funcionCallback) {
-        this.mongo.MongoClient.connect(this.app.get('db'), function (err, db) {
-
-            if (err) {
-                funcionCallback(null);
-            } else {
-                var collection = db.collection('usuarios');
-                collection.find(usuario).toArray(function (err, usuarios) {
                     if (err) {
                         funcionCallback(null);
                     } else {
