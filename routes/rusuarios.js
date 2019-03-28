@@ -22,13 +22,23 @@ module.exports = function (app, swig, gestorBD) {
             email: req.body.email,
             password: seguro
         }
-        gestorBD.insertarUsuario(usuario, function (id) {
-            if (id == null) {
-                res.send("Error al insertar ");
+        var criterio = {
+            email: req.body.email
+        }
+        gestorBD.obtenerUsuarios(criterio, function (usuarios) {
+            if (usuarios == null || usuarios.length == 0) {
+                gestorBD.insertarUsuario(usuario, function (id) {
+                    if (id == null) {
+                        res.send("Error al insertar ");
+                    } else {
+                        res.send('Usuario Insertado ' + id);
+                    }
+                });
             } else {
-                res.send('Usuario Insertado ' + id);
+                res.send("Usuario ya existente");
             }
         });
+
 
     })
     app.post("/identificarse", function (req, res) {
