@@ -2,6 +2,8 @@
 var express = require('express');
 var app = express();
 
+var rest = require('request');
+app.set('rest',rest);
 
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
